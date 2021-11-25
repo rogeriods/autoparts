@@ -11,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ProdutoGrid />} />
         <Route path="/produto/novo" element={<ProdutoForm />} />
+        <Route path="/produto/:id/editar" element={<ProdutoForm />} />
       </Routes>
     </BrowserRouter>
   );

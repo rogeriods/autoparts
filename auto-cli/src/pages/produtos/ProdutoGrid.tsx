@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Produto } from '../../models/Produto';
 
 function ProdutoGrid() {
@@ -13,6 +14,15 @@ function ProdutoGrid() {
     }
     loadProdutos();
   }, []);
+
+  // Delete
+  async function delProduto(id: number) {
+    if (window.confirm('Deseja realmente deletar este produto?')) {
+      await axios.delete(`produtos/${id}`);
+
+      setProdutos(produtos.filter((p) => p.id !== id));
+    }
+  }
 
   return (
     <div className="container">
@@ -46,10 +56,10 @@ function ProdutoGrid() {
                 <td>{produto.preco}</td>
                 <td style={{ width: 80 }}>
                   <div className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                    <button type="button" className="btn btn-outline-dark">
+                    <Link to={`produto/${produto.id}/editar`} className="btn btn-outline-dark">
                       <i className="fas fa-edit"></i>
-                    </button>
-                    <button type="button" className="btn btn-outline-danger">
+                    </Link>
+                    <button type="button" className="btn btn-outline-danger" onClick={() => delProduto(produto.id)}>
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
