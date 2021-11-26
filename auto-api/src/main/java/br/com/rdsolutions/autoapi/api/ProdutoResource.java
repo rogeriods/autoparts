@@ -32,8 +32,8 @@ public class ProdutoResource {
      */
     @GetMapping
     public ResponseEntity<List<Produto>> getProdutos() {
-        log.info("Carregando todos produtos");
-        return ResponseEntity.ok().body(produtoRepo.findAll());
+	log.info("Carregando todos produtos");
+	return ResponseEntity.ok().body(produtoRepo.findAll());
     }
 
     /**
@@ -43,8 +43,8 @@ public class ProdutoResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Produto> getProdutoById(@PathVariable Long id) {
-        log.info("Carregando produto pelo id: {}", id);
-        return produtoRepo.findById(id).map(produto -> ResponseEntity.ok().body(produto)).orElse(ResponseEntity.notFound().build());
+	log.info("Carregando produto pelo id: {}", id);
+	return produtoRepo.findById(id).map(produto -> ResponseEntity.ok().body(produto)).orElse(ResponseEntity.notFound().build());
     }
 
     /**
@@ -54,38 +54,35 @@ public class ProdutoResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProdutoById(@PathVariable Long id) {
-        log.info("Deletando produto pelo id: {}", id);
-        Produto produtoToDelete = produtoRepo.findById(id).orElse(null);
+	log.info("Deletando produto pelo id: {}", id);
+	Produto produtoToDelete = produtoRepo.findById(id).orElse(null);
 
-        if (produtoToDelete == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            produtoRepo.delete(produtoToDelete);
-            return new ResponseEntity<String>("Produto deletado com sucesso!", HttpStatus.ACCEPTED);
-        }
+	if (produtoToDelete == null) {
+	    return ResponseEntity.notFound().build();
+	} else {
+	    produtoRepo.delete(produtoToDelete);
+	    return new ResponseEntity<String>("Produto deletado com sucesso!", HttpStatus.ACCEPTED);
+	}
     }
 
     /**
-     * @route PUT /api/produtos
+     * @route PUT /api/produtos/{id}
      * @description Cria produto e carrega arquivo
      * @access Público
      */
-    @PutMapping
-    public ResponseEntity<Produto> updateProduto(Produto produto, @RequestParam(value = "file", required = false) MultipartFile file) {
-        Produto produtoAtual = produtoRepo.findById(produto.getId()).orElse(null);
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> updateProduto(@RequestBody Produto produto, @PathVariable Long id) {
+	Produto produtoAtual = produtoRepo.findById(id).orElse(null);
+	
+	if (produto != null) {
+	    produto.setId(produtoAtual.getId());
+	} else {
+	    return ResponseEntity.notFound().build();
+	}
 
-        if (file != null) {
-            produto.setImageName(file.getOriginalFilename());
-            log.info("Carregando arquivo {}", file.getOriginalFilename());
-            storageService.store(file);
-        } else {
-            // Consist image if I didn't change on form
-            produto.setImageName(produtoAtual.getImageName());
-        }
-
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/produtos/" + produto.getId()).toUriString());
-        log.info("Atualizando produto {}", produto.getDescricao());
-        return ResponseEntity.created(uri).body(produtoRepo.save(produto));
+	URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/produtos/" + produto.getId()).toUriString());
+	log.info("Atualizando produto {}", produto.getDescricao());
+	return ResponseEntity.created(uri).body(produtoRepo.save(produto));
     }
 
     /**
@@ -95,21 +92,21 @@ public class ProdutoResource {
      */
     @PostMapping
     public ResponseEntity<Produto> saveProduto(@RequestBody Produto produto) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/produtos").toUriString());
-        log.info("Criando produto {}", produto.getDescricao());
-        return ResponseEntity.created(uri).body(produtoRepo.save(produto));
+	URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/produtos").toUriString());
+	log.info("Criando produto {}", produto.getDescricao());
+	return ResponseEntity.created(uri).body(produtoRepo.save(produto));
     }
 
-	/**
-	 * @route POST /api/produtos/upload
-	 * @description Upload file
-	 * @access Público
-	 */
-	@PostMapping("upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
-		log.info("Carregando arquivo {}", file.getOriginalFilename());
-		storageService.store(file);
-		return new ResponseEntity<String>(file.getOriginalFilename(), HttpStatus.ACCEPTED);
-	}
+    /**
+     * @route POST /api/produtos/upload
+     * @description Upload file
+     * @access Público
+     */
+    @PostMapping("upload")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+	log.info("Carregando arquivo {}", file.getOriginalFilename());
+	storageService.store(file);
+	return new ResponseEntity<String>(file.getOriginalFilename(), HttpStatus.ACCEPTED);
+    }
 
 }

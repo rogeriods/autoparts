@@ -1,20 +1,19 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import ProdutoForm from './pages/produtos/ProdutoForm';
-import ProdutoGrid from './pages/produtos/ProdutoGrid';
+import Header from './components/Header';
+import ProdutoGrid from './pages/ProdutoGrid';
+import ProdutoForm from './pages/ProdutoForm';
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
-      <Navbar />
+      <Header />
       <Routes>
         <Route path="/" element={<ProdutoGrid />} />
         <Route path="/produto/novo" element={<ProdutoForm />} />
-        <Route path="/produto/:id/editar" element={<ProdutoForm />} />
+        <Route path="/produto/:produtoId/editar" element={<ProdutoForm />} />
       </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

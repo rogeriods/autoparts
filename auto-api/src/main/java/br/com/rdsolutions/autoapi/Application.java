@@ -30,9 +30,6 @@ public class Application implements WebMvcConfigurer {
 	    produtoRepo.save(new Produto(null, "Produto 03", null, null, 1, null, "default.png"));
 	    produtoRepo.save(new Produto(null, "Produto 04", null, null, 1, null, "default.png"));
 	    produtoRepo.save(new Produto(null, "Produto 05", null, null, 1, null, "default.png"));
-	    produtoRepo.save(new Produto(null, "Produto 06", null, null, 1, null, "default.png"));
-	    produtoRepo.save(new Produto(null, "Produto 07", null, null, 1, null, "default.png"));
-	    produtoRepo.save(new Produto(null, "Produto 08", null, null, 1, null, "default.png"));
 	};
     }
     
